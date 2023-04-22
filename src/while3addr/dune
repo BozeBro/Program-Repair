@@ -3,4 +3,4 @@
 
 (library
  (name while3addr)
- (libraries core while))
+ (libraries core))

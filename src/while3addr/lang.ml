@@ -12,6 +12,14 @@ type instr =
   | OpAssign of id * id * id * op
   | Goto of lineno
   | IfGoto of id * opr * lineno
+  | ConstAssignGet of id * id * int
+  | VarAssignGet of id * id * id
+  | ConstAssignArray of id * int
+  | VarAssignArray of id * id
+  | UpdateII of id * id * id
+  | UpdateIC of id * id * int
+  | UpdateCI of id * int * id
+  | UpdateCC of id * int * int
   | Print of id
   | Halt
 
@@ -39,6 +47,7 @@ let string_of_instr i = function
      Format.sprintf "%d: if %s %s 0 goto %d" i id (string_of_opr op) n
   | Print id -> Format.sprintf "%d: print %s" i id
   | Halt -> Format.sprintf "%d: halt" i
+  | _ -> " "
 
 let string_of_listing listing =
   Int.Map.fold_right listing ~init:[]

@@ -21,6 +21,9 @@ open Lang
 %token IF
 %token PRINT
 %token HALT
+%token GET
+%token ARRAY
+%token UPDATE
 
 %token EOF
 
@@ -56,7 +59,15 @@ stmt:
   | GOTO location                             { Goto $2 }
   | IF IDENTIFIER opr ZERO GOTO location      { IfGoto ($2, $3, $6) }
   | PRINT IDENTIFIER                          { Print $2 }
+  | IDENTIFIER SET ARRAY IDENTIFIER {VarAssignArray ($1, $4)}
+  | IDENTIFIER SET ARRAY const {ConstAssignArray ($1, $4)}
+  | IDENTIFIER SET GET IDENTIFIER IDENTIFIER  {VarAssignGet ($1, $4, $5)}
+  | IDENTIFIER SET GET IDENTIFIER const       {ConstAssignGet ($1, $4, $5)}
   | HALT                                      { Halt }
+  | UPDATE IDENTIFIER IDENTIFIER IDENTIFIER   { UpdateII ($2, $3, $4) }
+  | UPDATE IDENTIFIER IDENTIFIER const        { UpdateIC ($2, $3, $4) }
+  | UPDATE IDENTIFIER const IDENTIFIER        { UpdateCI ($2, $3, $4) }
+  | UPDATE IDENTIFIER const const             { UpdateCC ($2, $3, $4) }
 
 insn:
   | location COLON stmt                       { $1, $3 }

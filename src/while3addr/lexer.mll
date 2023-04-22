@@ -18,7 +18,10 @@ rule initial = parse
 | "if"          { IF }
 | "goto"        { GOTO }
 | "print"       { PRINT }
+| "get"         { GET }
+| "array"       { ARRAY }
 | "halt"        { HALT }
+| "update"      { UPDATE }
 
 | ['1'-'9']['0'-'9']* {
   let str = Lexing.lexeme lexbuf in
