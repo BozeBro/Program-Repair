@@ -1,0 +1,5 @@
+1: x := array 10
+2: y := 3
+3: y := y + y
+4: print y
+5: halt

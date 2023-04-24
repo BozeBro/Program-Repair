@@ -3,6 +3,7 @@ length := 10;
 a := array 10;
 m := 0;
 while m < length do {
+    print m;
     update a m (length - m);
     m := m + 1
 };
@@ -23,5 +24,5 @@ while i < (length - 1) do {
     skip;
     i := i + 1
 };
-print a;
-print i
+print a
+

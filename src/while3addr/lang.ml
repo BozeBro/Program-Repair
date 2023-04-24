@@ -3,7 +3,11 @@ open Core
 type id = string
 type lineno = int
 type opr = LT | EQ
-type op = Add | Sub | Mul | Div
+type op = Add | Sub | Mul | Div | Get
+
+type var_t = 
+| Int of int 
+| Arr of int array
 
 type instr =
   | ConstAssign of id * int
@@ -11,8 +15,6 @@ type instr =
   | OpAssign of id * id * id * op
   | Goto of lineno
   | IfGoto of id * opr * lineno
-  | ConstAssignGet of id * id * int
-  | VarAssignGet of id * id * id
   | ConstAssignArray of id * int
   | VarAssignArray of id * id
   | UpdateII of id * id * id
@@ -25,7 +27,7 @@ type instr =
 type listing = instr Int.Map.t
 type program = int * listing
 
-let string_of_op = function Add -> "+" | Sub -> "-" | Mul -> "*" | Div -> "/"
+let string_of_op = function Add -> "+" | Sub -> "-" | Mul -> "*" | Div -> "/" | Get -> "!!"
 let string_of_opr = function LT -> "<" | EQ -> "="
 
 let string_of_instr i = function
@@ -38,7 +40,12 @@ let string_of_instr i = function
       Format.sprintf "%d: if %s %s 0 goto %d" i id (string_of_opr op) n
   | Print id -> Format.sprintf "%d: print %s" i id
   | Halt -> Format.sprintf "%d: halt" i
-  | _ -> " "
+  | VarAssignArray (v, len) -> Format.sprintf "%d: %s := array %s" i v len
+  | ConstAssignArray (v, len) -> Format.sprintf "%d: %s := array %d" i v len
+  | UpdateCC (v, a, b) -> Format.sprintf "%d: update %s %d %d" i v a b
+  | UpdateCI (v, a, b) -> Format.sprintf "%d: update %s %d %s" i v a b
+  | UpdateIC (v, a, b) -> Format.sprintf "%d: update %s %s %d" i v a b
+  | UpdateII (v, a, b) -> Format.sprintf "%d: update %s %s %s" i v a b
 
 let string_of_listing listing =
   Int.Map.fold_right listing ~init:[] ~f:(fun ~key:lineno ~data:i accum ->

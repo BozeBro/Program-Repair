@@ -1,6 +1,7 @@
 x := 0;
 x := 1;
 y := 0;
+m := array 10;
 while x < 10 do {
   print x;
   x := x + 1

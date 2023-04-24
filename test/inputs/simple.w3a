@@ -3,9 +3,6 @@
 3: if x = 0 goto 6
 4: print y
 5: goto 7
-6: print x
-7: z := array 10
-8: update z x y
-9: m := get z 0
-10: print m
-11: halt
+6: x := array 10
+7: print x
+8: halt

@@ -7,6 +7,7 @@ let getop = function
   | While.Sub _ -> Sub
   | While.Mul _ -> Mul
   | While.Div _ -> Div
+  | While.Get _ -> Get
   | _ -> failwith "getopt on non-arithmetic operation"
 
 let newIfGoto v op target = IfGoto (v, op, target)
@@ -49,7 +50,10 @@ let compile stmt =
        let prog', v1 = transform_aexp prog a1 in
        let prog'', v2 = transform_aexp prog' a2 in
        append_to_program prog'' (OpAssign(v0, v1, v2, myop)), v0
-    | _ -> failwith "FAIL"
+    | While.Get (arr, ind) ->
+      let v = fresh () in 
+      let prog', v1 = transform_aexp prog ind in 
+      append_to_program prog' (OpAssign(v, arr, v1, Get)), v
   and transform_cond prog = function
     (* Check that v0 equals 0 *)
     | While.True ->
@@ -85,7 +89,7 @@ let compile stmt =
     | While.Not b -> transform_cond prog (invert_not b)
     | While.LEQ (a1, a2) ->
        transform_cond prog (Or ((LT (a1, a2)), (EQ (a1, a2))))
-    | While.GEQ (a1, a2) -> transform_cond prog (LT (a2, a1))
+    | While.GEQ (a1, a2) -> transform_cond prog (Or ((GT (a1, a2)), (EQ (a1, a2))))
     | While.And (b1, b2) -> (* I know this is hideous, hard to keep all the pieces in my head *)
        (* basically, we do:
           if (b1 and b2) -->
@@ -141,6 +145,19 @@ let compile stmt =
     | While.Print aexp ->
        let prog',v0 = transform_aexp prog aexp in
        append_to_program prog' (Print v0)
+   | While.Update (loc, Var y, Var z) -> append_to_program prog (UpdateII (loc, y, z))
+   | While.Update (loc, Var y, Num z) -> append_to_program prog (UpdateIC (loc, y, z))
+   | While.Update (loc, Num y, Num z) -> append_to_program prog (UpdateCC (loc, y, z))
+   | While.Update (loc, Num y, Var z) -> append_to_program prog (UpdateCI (loc, y, z))
+   | While.Update (loc, aexp1, aexp2) -> 
+      let prog', v0 = transform_aexp prog aexp1 in 
+      let prog'', v1 = transform_aexp prog' aexp2 in 
+      append_to_program prog'' (UpdateII (loc, v0, v1))
+    | While.ArrAssign (x, Var y) -> append_to_program prog (VarAssignArray (x, y))
+    | While.ArrAssign (x, Num y) -> append_to_program prog (ConstAssignArray (x, y))
+    | While.ArrAssign (x, aexp) -> 
+      let prog', v2 = transform_aexp prog aexp in 
+      append_to_program prog' (VarAssignArray (x, v2))
     | While.Assign (x, Var y) -> append_to_program prog (VarAssign (x, y))
     | While.Assign (x, Num n) -> append_to_program prog (ConstAssign (x, n))
     | While.Assign(x, aexp) ->
@@ -170,7 +187,7 @@ let compile stmt =
        let pc,prog = append_to_program prog (Goto(else_start)) in
        let prog = insert_in_program (pc,prog) jump_past_if (Goto(pc)) in
        insert_in_program prog jump_past_else_if_goto (Goto(jump_past_if))
-    | While.While (b, s) ->
+    | While.While (b, s) -> 
        (* while b do s1 -->
           1. if not b goto 4
           2. s1
@@ -188,8 +205,6 @@ let compile stmt =
     | While.Let _ -> failwith "Let translation to while3addr is not implemented and not \
                               part of this assignment; try While code without Let \
                               instead"
-    | _ -> failwith "FAIL"
-
   in
   let prog = transform_stmt (1, Int.Map.empty) stmt in
   append_to_program prog (Halt)

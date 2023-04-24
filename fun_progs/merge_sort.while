@@ -1,0 +1,149 @@
+/* Copied from https://stackoverflow.com/questions/1557894/non-recursive-merge-sort */
+num := 100;
+a := array 100;
+b := array num;
+update a 0 950;
+update a 1 206;
+update a 2 56;
+update a 3 371;
+update a 4 427;
+update a 5 106;
+update a 6 144;
+update a 7 158;
+update a 8 975;
+update a 9 148;
+update a 10 796;
+update a 11 166;
+update a 12 861;
+update a 13 76;
+update a 14 516;
+update a 15 413;
+update a 16 92;
+update a 17 803;
+update a 18 518;
+update a 19 145;
+update a 20 495;
+update a 21 719;
+update a 22 964;
+update a 23 758;
+update a 24 511;
+update a 25 515;
+update a 26 92;
+update a 27 448;
+update a 28 867;
+update a 29 150;
+update a 30 47;
+update a 31 410;
+update a 32 170;
+update a 33 158;
+update a 34 117;
+update a 35 294;
+update a 36 334;
+update a 37 300;
+update a 38 245;
+update a 39 607;
+update a 40 545;
+update a 41 818;
+update a 42 843;
+update a 43 661;
+update a 44 215;
+update a 45 573;
+update a 46 420;
+update a 47 424;
+update a 48 775;
+update a 49 328;
+update a 50 504;
+update a 51 656;
+update a 52 992;
+update a 53 890;
+update a 54 27;
+update a 55 397;
+update a 56 821;
+update a 57 487;
+update a 58 489;
+update a 59 469;
+update a 60 113;
+update a 61 637;
+update a 62 539;
+update a 63 461;
+update a 64 67;
+update a 65 781;
+update a 66 782;
+update a 67 497;
+update a 68 390;
+update a 69 510;
+update a 70 839;
+update a 71 653;
+update a 72 886;
+update a 73 844;
+update a 74 851;
+update a 75 383;
+update a 76 826;
+update a 77 486;
+update a 78 900;
+update a 79 27;
+update a 80 952;
+update a 81 440;
+update a 82 901;
+update a 83 495;
+update a 84 268;
+update a 85 986;
+update a 86 723;
+update a 87 68;
+update a 88 739;
+update a 89 315;
+update a 90 576;
+update a 91 821;
+update a 92 167;
+update a 93 167;
+update a 94 40;
+update a 95 303;
+update a 96 110;
+update a 97 381;
+update a 98 844;
+update a 99 197;
+right := 0;
+rend := 0;
+i := 0;
+j := 0;
+m := 0;
+t := 0;
+k := 1;
+while k < num do {
+    left := 0;
+    while left + k < num do {
+        right := left + k;
+        rend := right + k;
+        if rend > num then {rend := num} else {skip};
+        m := left;
+        i := left;
+        j := right; 
+        while i < right and j < rend do {
+            if ((a !! i) <= (a !! j)) then 
+            {update b m (a !! i);
+            i := i + 1}
+            else 
+            {update b m (a !! j);
+            j := j + 1};
+            m := m + 1
+        };
+        while i < right do {
+            update b m (a !! i);
+            i := i + 1;
+            m := m + 1
+        };
+        while j < rend do {
+            update b m (a !! j);
+            j := j + 1;
+            m := m + 1
+        };
+        m := left;
+        while m < rend do {
+            update a m (b !! m);
+            m := m + 1
+        };
+    left := left + (k * 2)
+    };
+    k := k * 2
+};
+print a
