@@ -4,10 +4,7 @@ type id = string
 type lineno = int
 type opr = LT | EQ
 type op = Add | Sub | Mul | Div | Get
-
-type var_t = 
-| Int of int 
-| Arr of int array
+type var_t = Int of int | Arr of int array
 
 type instr =
   | ConstAssign of id * int
@@ -27,7 +24,13 @@ type instr =
 type listing = instr Int.Map.t
 type program = int * listing
 
-let string_of_op = function Add -> "+" | Sub -> "-" | Mul -> "*" | Div -> "/" | Get -> "!!"
+let string_of_op = function
+  | Add -> "+"
+  | Sub -> "-"
+  | Mul -> "*"
+  | Div -> "/"
+  | Get -> "!!"
+
 let string_of_opr = function LT -> "<" | EQ -> "="
 
 let string_of_instr i = function
