@@ -18,7 +18,7 @@ rule initial = parse
 | "if"          { IF }
 | "goto"        { GOTO }
 | "print"       { PRINT }
-| "get"         { GET }
+| "!!"          { GET }
 | "array"       { ARRAY }
 | "halt"        { HALT }
 | "update"      { UPDATE }

@@ -49,7 +49,7 @@ let compile stmt =
        let prog', v1 = transform_aexp prog a1 in
        let prog'', v2 = transform_aexp prog' a2 in
        append_to_program prog'' (OpAssign(v0, v1, v2, myop)), v0
-    | _ -> prog, ""
+    | _ -> failwith "FAIL"
   and transform_cond prog = function
     (* Check that v0 equals 0 *)
     | While.True ->
@@ -188,7 +188,7 @@ let compile stmt =
     | While.Let _ -> failwith "Let translation to while3addr is not implemented and not \
                               part of this assignment; try While code without Let \
                               instead"
-    | _ -> prog
+    | _ -> failwith "FAIL"
 
   in
   let prog = transform_stmt (1, Int.Map.empty) stmt in

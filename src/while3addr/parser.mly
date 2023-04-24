@@ -43,6 +43,7 @@ op:
   | MINUS                                    { Sub }
   | TIMES                                    { Mul }
   | DIV                                      { Div }
+  // | GET                                      { Get }
 
 const:
   | POSITIVE                                 { $1 }
@@ -61,8 +62,8 @@ stmt:
   | PRINT IDENTIFIER                          { Print $2 }
   | IDENTIFIER SET ARRAY IDENTIFIER {VarAssignArray ($1, $4)}
   | IDENTIFIER SET ARRAY const {ConstAssignArray ($1, $4)}
-  | IDENTIFIER SET GET IDENTIFIER IDENTIFIER  {VarAssignGet ($1, $4, $5)}
-  | IDENTIFIER SET GET IDENTIFIER const       {ConstAssignGet ($1, $4, $5)}
+  | IDENTIFIER SET GET IDENTIFIER IDENTIFIER  { VarAssignGet ($1, $4, $5)}
+  | IDENTIFIER SET GET IDENTIFIER const       { ConstAssignGet ($1, $4, $5)}
   | HALT                                      { Halt }
   | UPDATE IDENTIFIER IDENTIFIER IDENTIFIER   { UpdateII ($2, $3, $4) }
   | UPDATE IDENTIFIER IDENTIFIER const        { UpdateIC ($2, $3, $4) }

@@ -4,7 +4,4 @@ y := 0;
 while x < 10 do {
   print x;
   x := x + 1
-};
-m := array 10;
-update m 1 10;
-print (m !! 1)
+}
