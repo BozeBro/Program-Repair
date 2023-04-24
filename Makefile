@@ -2,7 +2,9 @@ all: build
 
 build:
 	dune build --profile dev
+	@[ -L while ] || ln -s _build/default/bin/while.exe while
 	@[ -L w3a ] || ln -s _build/default/bin/w3a.exe w3a
+	@[ -L compile ] || ln -s _build/default/bin/compile.exe compile
 test:
 	@dune runtest
 

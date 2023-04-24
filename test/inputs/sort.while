@@ -1,0 +1,27 @@
+i := 0;
+length := 10;
+a := array 10;
+m := 0;
+while m < length do {
+    update a m (length - m);
+    m := m + 1
+};
+print a;
+while i < (length - 1) do {
+
+    jMin := i;
+    j := i + 1;
+    while j < length do {
+        if ((a !! j) < (a !! jMin)) then jMin := j else skip;
+        j := j + 1
+    };
+    if jMin != i then 
+        tmp := a !! i; 
+        update a i (a !! jMin);
+        update a jMin tmp 
+    else 
+    skip;
+    i := i + 1
+};
+print a;
+print i

@@ -5,4 +5,4 @@ let lexbuf = Lexing.from_channel In_channel.stdin
 let prog = (1, Parser.listing Lexer.initial lexbuf)
 
 let () =
-  Interpreter.eval_program Interpreter.initial_env Interpreter.initial_arrs prog 
+  Interpreter.eval_program Interpreter.initial_env Interpreter.initial_arrs prog

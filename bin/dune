@@ -2,3 +2,14 @@
  (libraries while3addr)
  (modules w3a)
  (names w3a))
+
+(executables
+ (libraries core while)
+ (modules while)
+ (names while))
+
+
+(executables
+ (libraries core while while3addr)
+ (modules compile)
+ (names compile))
