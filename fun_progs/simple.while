@@ -1,0 +1,7 @@
+num := 10;
+a := num / 2;
+res := 0;
+if a * 2 == num then
+    res := 1 else res := 1;
+print res
+

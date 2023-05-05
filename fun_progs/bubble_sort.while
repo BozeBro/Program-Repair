@@ -1,0 +1,25 @@
+n := 10;
+i := 0;
+a := array n;
+while i < n do {
+    update a i (n - i);
+    i := i + 1
+};
+swapped := 1;
+i := 0;
+while i < (n - 1) do {
+    j := 0;
+    while j < (n - i - 1) do {
+        if (a !! j) > (a !! (j + 1)) then 
+        {
+            swapped := 1;
+            tmp := a !! j;
+            update a j (a !! (j + 1));
+            update a (j + 1) tmp
+        } else {skip};
+        j := j + 1
+    };
+    i := i + 1;
+    if (i == 0) then {i := (n - 1)} else {skip}
+};
+print a

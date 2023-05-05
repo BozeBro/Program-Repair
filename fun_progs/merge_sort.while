@@ -1,6 +1,6 @@
 /* Copied from https://stackoverflow.com/questions/1557894/non-recursive-merge-sort */
 num := 100;
-a := array 100;
+a := array num;
 b := array num;
 update a 0 950;
 update a 1 206;
@@ -102,6 +102,7 @@ update a 96 110;
 update a 97 381;
 update a 98 844;
 update a 99 197;
+print a;
 right := 0;
 rend := 0;
 i := 0;

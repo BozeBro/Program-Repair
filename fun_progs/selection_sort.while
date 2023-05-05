@@ -1,0 +1,22 @@
+n := 10;
+i := 0;
+a := array n;
+while i < n do {
+    update a i (n - i);
+    i := i + 1
+};
+print a;
+ind := 0;
+while ind < n do {
+    min_index := ind;
+    j := ind + 1;
+    while j < n do {
+        if (a !! j) < (a !! min_index) then {min_index := j} else {skip};
+        j := j + 1
+    };
+    tmp := a !! ind;
+    update a ind (a !! (min_index));
+    update a (min_index) tmp;
+    ind := ind + 1
+};
+print a

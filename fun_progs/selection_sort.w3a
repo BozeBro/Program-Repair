@@ -1,0 +1,72 @@
+1: n := 10
+2: i := 0
+3: a := array n
+4: goto 9
+5: a1 := 0
+6: goto 8
+7: a1 := 1
+8: goto 14
+9: a2 := n - i
+10: if a2 < 0 goto 5
+11: a3 := i - n
+12: if a3 = 0 goto 5
+13: goto 7
+14: if a1 = 0 goto 21
+15: a4 := n - i
+16: update a i a4
+17: a6 := 1
+18: a5 := i + a6
+19: i := a5
+20: goto 4
+21: print a
+22: ind := 0
+23: goto 28
+24: a7 := 0
+25: goto 27
+26: a7 := 1
+27: goto 33
+28: a8 := n - ind
+29: if a8 < 0 goto 24
+30: a9 := ind - n
+31: if a9 = 0 goto 24
+32: goto 26
+33: if a7 = 0 goto 71
+34: min_index := ind
+35: a11 := 1
+36: a10 := ind + a11
+37: j := a10
+38: goto 43
+39: a12 := 0
+40: goto 42
+41: a12 := 1
+42: goto 48
+43: a13 := n - j
+44: if a13 < 0 goto 39
+45: a14 := j - n
+46: if a14 = 0 goto 39
+47: goto 41
+48: if a12 = 0 goto 62
+49: goto 53
+50: min_index := j
+51: goto 52
+52: goto 58
+53: a16 := a !! j
+54: a17 := a !! min_index
+55: a15 := a16 - a17
+56: if a15 < 0 goto 50
+57: goto 52
+58: a19 := 1
+59: a18 := j + a19
+60: j := a18
+61: goto 38
+62: a20 := a !! ind
+63: tmp := a20
+64: a21 := a !! min_index
+65: update a ind a21
+66: update a min_index tmp
+67: a23 := 1
+68: a22 := ind + a23
+69: ind := a22
+70: goto 23
+71: print a
+72: halt

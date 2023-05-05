@@ -15,9 +15,9 @@ type instr =
   | ConstAssignArray of id * int
   | VarAssignArray of id * id
   | UpdateII of id * id * id
-  | UpdateIC of id * id * int
-  | UpdateCI of id * int * id
-  | UpdateCC of id * int * int
+  (* | UpdateIC of id * id * int
+     | UpdateCI of id * int * id
+     | UpdateCC of id * int * int *)
   | Print of id
   | Halt
 
@@ -45,9 +45,9 @@ let string_of_instr i = function
   | Halt -> Format.sprintf "%d: halt" i
   | VarAssignArray (v, len) -> Format.sprintf "%d: %s := array %s" i v len
   | ConstAssignArray (v, len) -> Format.sprintf "%d: %s := array %d" i v len
-  | UpdateCC (v, a, b) -> Format.sprintf "%d: update %s %d %d" i v a b
-  | UpdateCI (v, a, b) -> Format.sprintf "%d: update %s %d %s" i v a b
-  | UpdateIC (v, a, b) -> Format.sprintf "%d: update %s %s %d" i v a b
+  (* | UpdateCC (v, a, b) -> Format.sprintf "%d: update %s %d %d" i v a b
+     | UpdateCI (v, a, b) -> Format.sprintf "%d: update %s %d %s" i v a b
+     | UpdateIC (v, a, b) -> Format.sprintf "%d: update %s %s %d" i v a b *)
   | UpdateII (v, a, b) -> Format.sprintf "%d: update %s %s %s" i v a b
 
 let string_of_listing listing =

@@ -15,6 +15,8 @@ let update_arr env arrName ind newval lookup =
 let eval_insn env pc insn =
   let update env id value = String.Map.set env ~key:id ~data:value in
   let lookup = String.Map.find_exn in
+  (* let () = String.Map.iteri ~f:(fun ~key:x ~data:a -> printf "%s " x) env;print_string "\n" in *)
+  (* let () = print_int pc;print_string "\n" in  *)
   match insn with
   | ConstAssign (v, n) ->
       let new_env = update env v (Int n) in
@@ -64,27 +66,27 @@ let eval_insn env pc insn =
       let new_env = update env' name (Arr arr) in
       `Continue (pc + 1, new_env)
   | VarAssignArray (name, n) ->
-      let len = get_int (lookup env name) in
+      let len = get_int (lookup env n) in
       let arr = Array.create ~len 0 in
       let env' = String.Map.remove env name in
       let new_env = update env' name (Arr arr) in
       `Continue (pc + 1, new_env)
-  | UpdateCC (arrName, ind, newVal) ->
+  (* | UpdateCC (arrName, ind, newVal) ->
       update_arr env arrName ind newVal lookup;
-      `Continue (pc + 1, env)
+      `Continue (pc + 1, env) *)
   | UpdateII (arrName, x, y) ->
       let ind = get_int (lookup env x) in
       let newVal = get_int (lookup env y) in
       update_arr env arrName ind newVal lookup;
       `Continue (pc + 1, env)
-  | UpdateIC (arrName, x, newVal) ->
-      let ind = get_int (lookup env x) in
-      update_arr env arrName ind newVal lookup;
-      `Continue (pc + 1, env)
-  | UpdateCI (arrName, ind, y) ->
-      let newVal = get_int (lookup env y) in
-      update_arr env arrName ind newVal lookup;
-      `Continue (pc + 1, env)
+(* | UpdateIC (arrName, x, newVal) ->
+       let ind = get_int (lookup env x) in
+       update_arr env arrName ind newVal lookup;
+       `Continue (pc + 1, env)
+   | UpdateCI (arrName, ind, y) ->
+       let newVal = get_int (lookup env y) in
+       update_arr env arrName ind newVal lookup;
+       `Continue (pc + 1, env) *)
 
 let rec eval_program env (pc, listing) =
   let fetch location =

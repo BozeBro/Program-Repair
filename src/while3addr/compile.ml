@@ -186,14 +186,14 @@ let compile stmt =
     | While.Print aexp ->
         let prog', v0 = transform_aexp prog aexp in
         append_to_program prog' (Print v0)
-    | While.Update (loc, Var y, Var z) ->
-        append_to_program prog (UpdateII (loc, y, z))
-    | While.Update (loc, Var y, Num z) ->
-        append_to_program prog (UpdateIC (loc, y, z))
-    | While.Update (loc, Num y, Num z) ->
-        append_to_program prog (UpdateCC (loc, y, z))
-    | While.Update (loc, Num y, Var z) ->
-        append_to_program prog (UpdateCI (loc, y, z))
+    (* | While.Update (loc, Var y, Var z) ->
+           append_to_program prog (UpdateII (loc, y, z))
+       | While.Update (loc, Var y, Num z) ->
+           append_to_program prog (UpdateIC (loc, y, z))
+       | While.Update (loc, Num y, Num z) ->
+           append_to_program prog (UpdateCC (loc, y, z))
+       | While.Update (loc, Num y, Var z) ->
+           append_to_program prog (UpdateCI (loc, y, z)) *)
     | While.Update (loc, aexp1, aexp2) ->
         let prog', v0 = transform_aexp prog aexp1 in
         let prog'', v1 = transform_aexp prog' aexp2 in

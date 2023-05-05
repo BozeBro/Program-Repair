@@ -12,3 +12,8 @@
  (libraries core while while3addr)
  (modules compile)
  (names compile))
+
+(executables
+ (libraries core repair)
+ (modules repair)
+ (names repair))

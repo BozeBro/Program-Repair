@@ -1,0 +1,17 @@
+1: num := 10
+2: a2 := 2
+3: a1 := num / a2
+4: a := a1
+5: res := 0
+6: goto 11
+7: res := 1
+8: goto 10
+9: res := 1
+10: goto 16
+11: a5 := 2
+12: a4 := a * a5
+13: a3 := a4 - num
+14: if a3 = 0 goto 7
+15: goto 9
+16: print res
+17: halt

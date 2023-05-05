@@ -64,9 +64,9 @@ stmt:
   | IDENTIFIER SET ARRAY const                { ConstAssignArray ($1, $4)}
   | HALT                                      { Halt }
   | UPDATE IDENTIFIER IDENTIFIER IDENTIFIER   { UpdateII ($2, $3, $4) }
-  | UPDATE IDENTIFIER IDENTIFIER const        { UpdateIC ($2, $3, $4) }
-  | UPDATE IDENTIFIER const IDENTIFIER        { UpdateCI ($2, $3, $4) }
-  | UPDATE IDENTIFIER const const             { UpdateCC ($2, $3, $4) }
+  // | UPDATE IDENTIFIER IDENTIFIER const        { UpdateIC ($2, $3, $4) }
+  // | UPDATE IDENTIFIER const IDENTIFIER        { UpdateCI ($2, $3, $4) }
+  // | UPDATE IDENTIFIER const const             { UpdateCC ($2, $3, $4) }
 
 insn:
   | location COLON stmt                       { $1, $3 }

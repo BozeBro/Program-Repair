@@ -1,0 +1,8 @@
+1: num := 0
+2: res := 0
+3: if num = 0 goto 6
+4: res := 1
+5: goto 7
+6: res := 1
+7: print res 
+8: halt

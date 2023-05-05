@@ -1,0 +1,93 @@
+1: n := 10
+2: i := 0
+3: a := array n
+4: goto 9
+5: a1 := 0
+6: goto 8
+7: a1 := 1
+8: goto 14
+9: a2 := n - i
+10: if a2 < 0 goto 5
+11: a3 := i - n
+12: if a3 = 0 goto 5
+13: goto 7
+14: if a1 = 0 goto 21
+15: a4 := n - i
+16: update a i a4
+17: a6 := 1
+18: a5 := i + a6
+19: i := a5
+20: goto 4
+21: swapped := 1
+22: i := 0
+23: goto 28
+24: a7 := 0
+25: goto 27
+26: a7 := 1
+27: goto 37
+28: a10 := 1
+29: a9 := n - a10
+30: a8 := a9 - i
+31: if a8 < 0 goto 24
+32: a13 := 1
+33: a12 := n - a13
+34: a11 := i - a12
+35: if a11 = 0 goto 24
+36: goto 26
+37: if a7 = 0 goto 92
+38: j := 0
+39: goto 44
+40: a14 := 0
+41: goto 43
+42: a14 := 1
+43: goto 55
+44: a17 := n - i
+45: a18 := 1
+46: a16 := a17 - a18
+47: a15 := a16 - j
+48: if a15 < 0 goto 40
+49: a21 := n - i
+50: a22 := 1
+51: a20 := a21 - a22
+52: a19 := j - a20
+53: if a19 = 0 goto 40
+54: goto 42
+55: if a14 = 0 goto 80
+56: goto 69
+57: swapped := 1
+58: a23 := a !! j
+59: tmp := a23
+60: a26 := 1
+61: a25 := j + a26
+62: a24 := a !! a25
+63: update a j a24
+64: a28 := 1
+65: a27 := j + a28
+66: update a a27 tmp
+67: goto 68
+68: goto 76
+69: a30 := a !! j
+70: a33 := 1
+71: a32 := j + a33
+72: a31 := a !! a32
+73: a29 := a31 - a30
+74: if a29 < 0 goto 57
+75: goto 68
+76: a35 := 1
+77: a34 := j + a35
+78: j := a34
+79: goto 39
+80: a37 := 1
+81: a36 := i + a37
+82: i := a36
+83: goto 89
+84: a39 := 1
+85: a38 := n - a39
+86: i := a38
+87: goto 88
+88: goto 91
+89: if i = 0 goto 84
+90: goto 88
+91: goto 23
+92: print a
+93: halt
