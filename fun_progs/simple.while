@@ -1,7 +1,8 @@
-num := 10;
-a := num / 2;
+num := 11;
+m := num / 2;
 res := 0;
-if a * 2 == num then
+t := m * 2;
+if t == num then
     res := 1 else res := 1;
 print res
 
