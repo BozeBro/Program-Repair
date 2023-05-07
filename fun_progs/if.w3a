@@ -1,7 +1,7 @@
-1: num := 0
-2: res := 0
+1: res := 1000
+2: num := res
 3: if num = 0 goto 6
-4: res := 1
+4: res := 0
 5: goto 7
 6: res := 1
 7: print res 

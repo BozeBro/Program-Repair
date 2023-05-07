@@ -1,281 +1,190 @@
-1: num := 100
+1: num := 3
 2: a := array num
 3: b := array num
-4: update a 0 950
-5: update a 1 206
-6: update a 2 56
-7: update a 3 371
-8: update a 4 427
-9: update a 5 106
-10: update a 6 144
-11: update a 7 158
-12: update a 8 975
-13: update a 9 148
-14: update a 10 796
-15: update a 11 166
-16: update a 12 861
-17: update a 13 76
-18: update a 14 516
-19: update a 15 413
-20: update a 16 92
-21: update a 17 803
-22: update a 18 518
-23: update a 19 145
-24: update a 20 495
-25: update a 21 719
-26: update a 22 964
-27: update a 23 758
-28: update a 24 511
-29: update a 25 515
-30: update a 26 92
-31: update a 27 448
-32: update a 28 867
-33: update a 29 150
-34: update a 30 47
-35: update a 31 410
-36: update a 32 170
-37: update a 33 158
-38: update a 34 117
-39: update a 35 294
-40: update a 36 334
-41: update a 37 300
-42: update a 38 245
-43: update a 39 607
-44: update a 40 545
-45: update a 41 818
-46: update a 42 843
-47: update a 43 661
-48: update a 44 215
-49: update a 45 573
-50: update a 46 420
-51: update a 47 424
-52: update a 48 775
-53: update a 49 328
-54: update a 50 504
-55: update a 51 656
-56: update a 52 992
-57: update a 53 890
-58: update a 54 27
-59: update a 55 397
-60: update a 56 821
-61: update a 57 487
-62: update a 58 489
-63: update a 59 469
-64: update a 60 113
-65: update a 61 637
-66: update a 62 539
-67: update a 63 461
-68: update a 64 67
-69: update a 65 781
-70: update a 66 782
-71: update a 67 497
-72: update a 68 390
-73: update a 69 510
-74: update a 70 839
-75: update a 71 653
-76: update a 72 886
-77: update a 73 844
-78: update a 74 851
-79: update a 75 383
-80: update a 76 826
-81: update a 77 486
-82: update a 78 900
-83: update a 79 27
-84: update a 80 952
-85: update a 81 440
-86: update a 82 901
-87: update a 83 495
-88: update a 84 268
-89: update a 85 986
-90: update a 86 723
-91: update a 87 68
-92: update a 88 739
-93: update a 89 315
-94: update a 90 576
-95: update a 91 821
-96: update a 92 167
-97: update a 93 167
-98: update a 94 40
-99: update a 95 303
-100: update a 96 110
-101: update a 97 381
-102: update a 98 844
-103: update a 99 197
-104: print a
-105: right := 0
-106: rend := 0
-107: i := 0
-108: j := 0
-109: m := 0
-110: t := 0
-111: k := 1
-112: goto 117
-113: a1 := 0
-114: goto 116
-115: a1 := 1
-116: goto 122
-117: a2 := num - k
-118: if a2 < 0 goto 113
-119: a3 := k - num
-120: if a3 = 0 goto 113
-121: goto 115
-122: if a1 = 0 goto 280
-123: left := 0
-124: goto 129
-125: a4 := 0
-126: goto 128
-127: a4 := 1
-128: goto 136
-129: a6 := left + k
-130: a5 := num - a6
-131: if a5 < 0 goto 125
-132: a8 := left + k
-133: a7 := a8 - num
-134: if a7 = 0 goto 125
-135: goto 127
-136: if a4 = 0 goto 276
-137: a9 := left + k
-138: right := a9
-139: a10 := right + k
-140: rend := a10
-141: goto 145
-142: rend := num
-143: goto 144
-144: goto 148
-145: a11 := num - rend
-146: if a11 < 0 goto 142
-147: goto 144
-148: m := left
-149: i := left
-150: j := right
-151: goto 156
-152: a12 := 0
-153: goto 155
-154: a12 := 1
-155: goto 179
-156: goto 161
-157: a13 := 0
-158: goto 160
-159: a13 := 1
-160: goto 166
-161: a14 := right - i
-162: if a14 < 0 goto 157
-163: a15 := i - right
-164: if a15 = 0 goto 157
-165: goto 159
-166: if a13 = 0 goto 152
-167: goto 172
-168: a16 := 0
-169: goto 171
-170: a16 := 1
-171: goto 177
-172: a17 := rend - j
-173: if a17 < 0 goto 168
-174: a18 := j - rend
-175: if a18 = 0 goto 168
-176: goto 170
-177: if a16 = 0 goto 152
-178: goto 154
-179: if a12 = 0 goto 213
-180: goto 193
-181: a19 := a !! i
-182: update b m a19
-183: a21 := 1
-184: a20 := i + a21
-185: i := a20
-186: goto 192
-187: a22 := a !! j
-188: update b m a22
-189: a24 := 1
-190: a23 := j + a24
-191: j := a23
-192: goto 209
-193: goto 198
-194: a25 := 0
-195: goto 197
-196: a25 := 1
-197: goto 207
-198: a27 := a !! i
-199: a28 := a !! j
-200: a26 := a27 - a28
-201: if a26 < 0 goto 194
-202: a30 := a !! i
-203: a31 := a !! j
-204: a29 := a30 - a31
-205: if a29 = 0 goto 194
-206: goto 196
-207: if a25 = 0 goto 181
-208: goto 187
-209: a33 := 1
-210: a32 := m + a33
-211: m := a32
-212: goto 151
-213: goto 218
-214: a34 := 0
-215: goto 217
-216: a34 := 1
-217: goto 223
-218: a35 := right - i
-219: if a35 < 0 goto 214
-220: a36 := i - right
-221: if a36 = 0 goto 214
-222: goto 216
-223: if a34 = 0 goto 233
-224: a37 := a !! i
-225: update b m a37
-226: a39 := 1
-227: a38 := i + a39
-228: i := a38
-229: a41 := 1
-230: a40 := m + a41
-231: m := a40
-232: goto 213
-233: goto 238
-234: a42 := 0
-235: goto 237
-236: a42 := 1
-237: goto 243
-238: a43 := rend - j
-239: if a43 < 0 goto 234
-240: a44 := j - rend
-241: if a44 = 0 goto 234
-242: goto 236
-243: if a42 = 0 goto 253
-244: a45 := a !! j
-245: update b m a45
-246: a47 := 1
-247: a46 := j + a47
-248: j := a46
-249: a49 := 1
-250: a48 := m + a49
-251: m := a48
-252: goto 233
-253: m := left
-254: goto 259
-255: a50 := 0
-256: goto 258
-257: a50 := 1
-258: goto 264
-259: a51 := rend - m
-260: if a51 < 0 goto 255
-261: a52 := m - rend
-262: if a52 = 0 goto 255
-263: goto 257
-264: if a50 = 0 goto 271
-265: a53 := b !! m
-266: update a m a53
-267: a55 := 1
-268: a54 := m + a55
-269: m := a54
-270: goto 254
-271: a58 := 2
-272: a57 := k * a58
-273: a56 := left + a57
-274: left := a56
-275: goto 124
-276: a60 := 2
-277: a59 := k * a60
-278: k := a59
-279: goto 112
-280: print a
-281: halt
+4: a1 := 0
+5: a2 := 950
+6: update a a1 a2
+7: a3 := 1
+8: a4 := 206
+9: update a a3 a4
+10: a5 := 2
+11: a6 := 56
+12: update a a5 a6
+13: print a
+14: right := 0
+15: rend := 0
+16: i := 0
+17: j := 0
+18: m := 0
+19: t := 0
+20: k := 1
+21: goto 26
+22: a7 := 0
+23: goto 25
+24: a7 := 1
+25: goto 31
+26: a8 := num - k
+27: if a8 < 0 goto 22
+28: a9 := k - num
+29: if a9 = 0 goto 22
+30: goto 24
+31: if a7 = 0 goto 189
+32: left := 0
+33: goto 38
+34: a10 := 0
+35: goto 37
+36: a10 := 1
+37: goto 45
+38: a12 := left + k
+39: a11 := num - a12
+40: if a11 < 0 goto 34
+41: a14 := left + k
+42: a13 := a14 - num
+43: if a13 = 0 goto 34
+44: goto 36
+45: if a10 = 0 goto 185
+46: a15 := left + k
+47: right := a15
+48: a16 := right + k
+49: rend := a16
+50: goto 54
+51: rend := num
+52: goto 53
+53: goto 57
+54: a17 := num - rend
+55: if a17 < 0 goto 51
+56: goto 53
+57: m := left
+58: i := left
+59: j := right
+60: goto 65
+61: a18 := 0
+62: goto 64
+63: a18 := 1
+64: goto 88
+65: goto 70
+66: a19 := 0
+67: goto 69
+68: a19 := 1
+69: goto 75
+70: a20 := right - i
+71: if a20 < 0 goto 66
+72: a21 := i - right
+73: if a21 = 0 goto 66
+74: goto 68
+75: if a19 = 0 goto 61
+76: goto 81
+77: a22 := 0
+78: goto 80
+79: a22 := 1
+80: goto 86
+81: a23 := rend - j
+82: if a23 < 0 goto 77
+83: a24 := j - rend
+84: if a24 = 0 goto 77
+85: goto 79
+86: if a22 = 0 goto 61
+87: goto 63
+88: if a18 = 0 goto 122
+89: goto 102
+90: a25 := a !! i
+91: update b m a25
+92: a27 := 1
+93: a26 := i + a27
+94: i := a26
+95: goto 101
+96: a28 := a !! j
+97: update b m a28
+98: a30 := 1
+99: a29 := j + a30
+100: j := a29
+101: goto 118
+102: goto 107
+103: a31 := 0
+104: goto 106
+105: a31 := 1
+106: goto 116
+107: a33 := a !! i
+108: a34 := a !! j
+109: a32 := a33 - a34
+110: if a32 < 0 goto 103
+111: a36 := a !! i
+112: a37 := a !! j
+113: a35 := a36 - a37
+114: if a35 = 0 goto 103
+115: goto 105
+116: if a31 = 0 goto 90
+117: goto 96
+118: a39 := 1
+119: a38 := m + a39
+120: m := a38
+121: goto 60
+122: goto 127
+123: a40 := 0
+124: goto 126
+125: a40 := 1
+126: goto 132
+127: a41 := right - i
+128: if a41 < 0 goto 123
+129: a42 := i - right
+130: if a42 = 0 goto 123
+131: goto 125
+132: if a40 = 0 goto 142
+133: a43 := a !! i
+134: update b m a43
+135: a45 := 1
+136: a44 := i + a45
+137: i := a44
+138: a47 := 1
+139: a46 := m + a47
+140: m := a46
+141: goto 122
+142: goto 147
+143: a48 := 0
+144: goto 146
+145: a48 := 1
+146: goto 152
+147: a49 := rend - j
+148: if a49 < 0 goto 143
+149: a50 := j - rend
+150: if a50 = 0 goto 143
+151: goto 145
+152: if a48 = 0 goto 162
+153: a51 := a !! j
+154: update b m a51
+155: a53 := 1
+156: a52 := j + a53
+157: j := a52
+158: a55 := 1
+159: a54 := m + a55
+160: m := a54
+161: goto 142
+162: m := left
+163: goto 168
+164: a56 := 0
+165: goto 167
+166: a56 := 1
+167: goto 173
+168: a57 := rend - m
+169: if a57 < 0 goto 164
+170: a58 := m - rend
+171: if a58 = 0 goto 164
+172: goto 166
+173: if a56 = 0 goto 180
+174: a59 := b !! m
+175: update a m a59
+176: a61 := 1
+177: a60 := m + a61
+178: m := a60
+179: goto 163
+180: a64 := 2
+181: a63 := k * a64
+182: a62 := left + a63
+183: left := a62
+184: goto 33
+185: a66 := 2
+186: a65 := k * a66
+187: k := a65
+188: goto 21
+189: print a
+190: halt

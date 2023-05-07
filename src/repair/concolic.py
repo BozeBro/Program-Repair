@@ -66,7 +66,7 @@ def set(x, a):
         store[x] = a
 
 
-def guard(g):
+def guard(g, line):
     """Add `g` to current path constraint"""
     if solver is None:
         return  # Concolic testing is not running
@@ -75,7 +75,7 @@ def guard(g):
     assert solver.check()
 
     # Get line number of guard
-    line = int(currentframe().f_back.f_lineno)
+    # line = int(currentframe().f_back.f_lineno)
 
     # We are just seeing the k-th branch in this execution
     k = len(current_path)
@@ -88,6 +88,8 @@ def guard(g):
         if k == len(path_record) - 1:
             # We just got to the last negated guard
             if path_record[k].line == line:
+                pass
+
                 # We got to an unexpected branch
                 raise ConcolicException(
                     (
@@ -123,48 +125,137 @@ def dump_smt():
     """print Z3 constraints in Python in SMT-LIB format"""
     if solver is not None:
         print(solver.to_smt2())
+# # Top-level runner
+# def run(func, vars, **kwargs):
+#     """Concolically executes `func` with parameters `vars` and returns (total_paths:int, bug_found:bool)"""
+#     global store, current_path, path_record, solver
 
+#     # Initialize state
+#     inputs = {str(v): 0 for v in vars}  # Could also be random
+#     init(vars)
 
+#     total_runs = 0
+#     bug_found = False
+
+#     while True:
+
+#         # Run concolically
+#         try:
+#             # print("Running with inputs %s" % inputs)
+#             total_runs += 1
+#             if kwargs:
+#                 func(**inputs, **kwargs)
+#             else:
+#                 func(**inputs)
+        
+#         except AssertionError as e:
+#             traceback.print_exc()
+#             print("*** Assertion violation found! Inputs are: %s" % inputs)
+#             bug_found = True
+#         finally:
+#             print("... Path collected: %s" % current_path)
+#             # print("Path Record: %s" % path_record)
+
+#         # Figure out the next guard to negate
+#         next = len(current_path) - 1
+#         while True:
+#             print(next, path_record)
+#             while next >= 0 and path_record[next].done:
+#                 next = next - 1
+
+#             if next == -1:
+#                 print("Concolic execution complete! %d paths explored." % total_runs)
+#                 # TODO: Actually do a random restart if there was any unsoundness observed
+#                 return total_runs, bug_found
+#             else:
+#                 # print("next idx=%d" % next)
+#                 # Create a new path constraint up to `next` with the condition at index `next` negated
+#                 current_path = current_path[:next] + [z3.Not(current_path[next])]
+#                 path_record = path_record[: next + 1]
+#                 solver.reset()
+#                 solver.insert(current_path)
+#                 # print("Path Record: %s" % path_record)
+#                 print(
+#                     "... Negating the condition at line %d...." % path_record[-1].line
+#                 )
+#                 print("...... New candidate path: %s" % current_path)
+#                 is_sat = solver.check()
+#                 if is_sat == z3.sat:
+#                     model = solver.model()
+#                     inputs = {
+#                         var_name: model.eval(
+#                             var_symbol, model_completion=True
+#                         ).as_long()
+#                         for var_name, var_symbol in symbols.items()
+#                     }
+#                     print("...... SAT! New inputs are: %s" % inputs)
+#                     reset()
+#                     print()
+#                     break
+#                 elif is_sat == z3.unsat:
+#                     print("...... UNSAT!")
+#                     next = next - 1
+#                     continue  # Go look for the next branch to negate
+#                 else:
+#                     raise Exception("You should not get a z3 result of %s." % is_sat)
+#             return
+
+import random
 # Top-level runner
-def run(func, vars, **kwargs):
+def sym_run(func, vars, expected, **kwargs):
     """Concolically executes `func` with parameters `vars` and returns (total_paths:int, bug_found:bool)"""
     global store, current_path, path_record, solver
-
     # Initialize state
-    inputs = {str(v): 0 for v in vars}  # Could also be random
+    inputs = {str(v): random.randint(1, 100) for v in vars}  # Could also be random
     init(vars)
+
 
     total_runs = 0
     bug_found = False
+    constraints = False
+    # f = z3.Function(z3.IntSort(), z3.IntSort(), z3.IntSort())
 
     while True:
+        output = None
         # Run concolically
         try:
-            print("Running with inputs %s" % inputs)
+            # print("Running with inputs %s" % inputs)
             total_runs += 1
             if kwargs:
-                func(**inputs, **kwargs)
+                output = func(inputs, **kwargs)
             else:
-                func(**inputs)
+                func(inputs)
+        
         except AssertionError as e:
             traceback.print_exc()
-            print("*** Assertion violation found! Inputs are: %s" % inputs)
+            # print("*** Assertion violation found! Inputs are: %s" % inputs)
             bug_found = True
+        except ZeroDivisionError as e:
+            pass
+        except IndexError:
+            pass
         finally:
-            print("... Path collected: %s" % current_path)
+            # print("... Path collected: %s" % current_path)
+            if output != None:
+                pc = True
+                for cond in current_path:
+                    pc = z3.And(pc, cond)
+                constraints = z3.Or(constraints, z3.And(pc, output == expected))
             # print("Path Record: %s" % path_record)
 
         # Figure out the next guard to negate
         next = len(current_path) - 1
         while True:
-            print(next, path_record)
+            # print(next, path_record)
             while next >= 0 and path_record[next].done:
                 next = next - 1
 
             if next == -1:
-                print("Concolic execution complete! %d paths explored." % total_runs)
+                # print("Concolic execution complete! %d paths explored." % total_runs)
                 # TODO: Actually do a random restart if there was any unsoundness observed
-                return total_runs, bug_found
+                print(total_runs)
+                # return total_runs, bug_found
+                return constraints
             else:
                 # print("next idx=%d" % next)
                 # Create a new path constraint up to `next` with the condition at index `next` negated
@@ -173,10 +264,10 @@ def run(func, vars, **kwargs):
                 solver.reset()
                 solver.insert(current_path)
                 # print("Path Record: %s" % path_record)
-                print(
-                    "... Negating the condition at line %d...." % path_record[-1].line
-                )
-                print("...... New candidate path: %s" % current_path)
+                # print(
+                #     "... Negating the condition at line %d...." % path_record[-1].line
+                # )
+                # print("...... New candidate path: %s" % current_path)
                 is_sat = solver.check()
                 if is_sat == z3.sat:
                     model = solver.model()
@@ -186,12 +277,12 @@ def run(func, vars, **kwargs):
                         ).as_long()
                         for var_name, var_symbol in symbols.items()
                     }
-                    print("...... SAT! New inputs are: %s" % inputs)
+                    # print("...... SAT! New inputs are: %s" % inputs)
                     reset()
-                    print()
+                    # print()
                     break
                 elif is_sat == z3.unsat:
-                    print("...... UNSAT!")
+                    # print("...... UNSAT!")
                     next = next - 1
                     continue  # Go look for the next branch to negate
                 else:

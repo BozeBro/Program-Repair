@@ -1,0 +1,25 @@
+1: a := array 10
+2: res := 10
+3: goto 6
+4: goto 5
+5: goto 24
+6: goto 11
+7: a1 := 0
+8: goto 10
+9: a1 := 1
+10: goto 22
+11: a4 := 0
+12: a3 := a !! a4
+13: a5 := 10
+14: a2 := a5 - a3
+15: if a2 < 0 goto 7
+16: a8 := 0
+17: a7 := a !! a8
+18: a9 := 10
+19: a6 := a7 - a9
+20: if a6 = 0 goto 7
+21: goto 9
+22: if a1 = 0 goto 4
+23: goto 5
+24: print res
+25: halt

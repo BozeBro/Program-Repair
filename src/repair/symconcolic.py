@@ -2,22 +2,45 @@ import sys
 import z3
 from interpreter import *
 import concolic as c
-def symconcolic(expr, old_env, env, prog, pc):
-    instr = fetch(prog, pc)
-    for k,v in old_env.items():
+from copy import deepcopy
+def symconcolic(inputs, env, prog, pc: int):
+    env = deepcopy(env)
+    prog = deepcopy(prog)
+    # Assign concrete value
+    # Assign an arbitrary value for symbolic
+    # initialize known values for concolic
+    for k,v in env.items():
         c.set(k, v)
-    if (len(instr) > 2 and instr[1] == ':='):
-        v = instr[0]
-        c.set(v, z3.Int(v))
-    while 0 <= pc <= max(prog):
+    for k, v in env.items():
+        if type(v) == list:
+            arr = z3.Array("k", z3.IntSort(), z3.IntSort())
+            for ind, value in enumerate(v):
+                arr = z3.Store(arr, ind, value)
+            c.set(k, arr)
+    instr = fetch(prog, pc)
+    match getToken(instr):
+        case 'constAssign' | 'varAssign' | 'opAssign':
+            var = instr[0]
+            if inputs:
+                prog[pc] = [var, ":=", str(inputs[var])]
+            instr = fetch(prog, pc)
+            pc = eval_insn(env, pc, instr)
+            c.set(var, z3.Int(var))
+
+        # case 'if':
+        #     prog[pc] = ["if"] + ["0"] + ["="] + ["0"] + ["goto", str(instr[-1])]
+        #     pc = eval_insn(env, pc, fetch(prog, pc))
+    # General case
+    while 0 <= pc <= max(prog.keys()):
+        # print(c.current_path, instr)
         instr = fetch(prog, pc)
         if instr[0] == "print":
             pc += 1
-            continue
-        pc = eval_insn(env, pc, instr)
+            return c.get(instr[1])
+        old_pc = pc
         match getToken(instr):
             case 'halt':
-                continue
+                pass
             case 'constAssign':
                 c.set(instr[0], int(instr[2]))
             case 'varAssign':
@@ -25,15 +48,15 @@ def symconcolic(expr, old_env, env, prog, pc):
             case 'constArrayAssign':
                 length = int(instr[3])
                 # c.set(instr[0], z3.IntVector(instr[0], length))
-                arr = z3.IntVector(instr[0], length)
+                arr = z3.Array(instr[0], z3.IntSort(), z3.IntSort())
                 for i in range(length):
-                    z3.Store(arr, i, 0)
+                    arr = z3.Store(arr, i, 0)
                 c.set(instr[0], arr)
             case 'varArrayAssign':
-                length = c.get(instr[3])
-                arr = z3.IntVector(instr[0], length)
+                length = env[instr[3]]
+                arr = z3.Array(instr[0], z3.IntSort(), z3.IntSort())
                 for i in range(length):
-                    z3.Store(arr, i, 0)
+                    arr = z3.Store(arr, i, 0)
                 c.set(instr[0], arr)
             case 'goto':
                 pass
@@ -41,23 +64,45 @@ def symconcolic(expr, old_env, env, prog, pc):
                 lhs = instr[1]
                 op = cmps[instr[2]]
                 sym_lhs = c.get(lhs)
+                val = env[lhs]
                 cond = op(sym_lhs, 0)
-                if op(sym_lhs, 0):
-                    c.guard(cond)
+                if op(val, 0):
+                    c.guard(cond, 2*old_pc)
                 else:
-                    c.guard(z3.Not(cond))
+                    c.guard(z3.Not(cond), 2*old_pc+1)
             case 'print':
                 pass
             case 'update':
                 arr = c.get(instr[1])
                 index = c.get(instr[2])
                 val = c.get(instr[3])
+                varr = env[instr[1]]
+                vind = env[instr[2]]
+                if vind >= len(varr):
+                    c.guard(index == vind, old_pc * 2 + 1)
                 c.set(instr[1], z3.Store(arr, index, val))
             case 'opAssign':
                 [lhs, _, v0, op, v1] = instr
                 sv0 = c.get(v0)
                 sv1 = c.get(v1)
-                c.set(lhs, ops[op](sv0, sv1))
+                if op == '/':
+                    if env[v1] == 0:
+                        c.guard(sv1 == 0, old_pc * 2 + 1)
+                    if isinstance(sv0, z3.ArithRef) or isinstance(sv1, z3.ArithRef):
+                        c.set(lhs, sv0 / sv1)
+                    else:
+                        c.set(lhs, ops[op](sv0, sv1))
+                elif op == '!!':
+                    var0 = env[v0]
+                    var1 = env[v1]
+                    if var1 >= len(var0):
+                        c.guard(sv1 == var1, old_pc *2 + 1)
+                    # print(v0, type(sv0))
+                    c.set(lhs, z3.Select(sv0, sv1))
+                else:
+                    c.set(lhs, ops[op](sv0, sv1))
+        pc = eval_insn(env, pc, instr)
+                        
 def findline(f, line):
 
     prog = getProg(f)
@@ -73,22 +118,29 @@ def findline(f, line):
         raise Exception("pc counter is out of bounds or ended too early")
     old_env = env.copy()
     instr = fetch(prog, pc)
-    eval_insn(env, pc, instr)
-    old = env[instr[0]]
-    symconcolic(old_env, old_env, prog, pc)
+    kwargs = {
+        "env": old_env.copy(),
+        "prog": prog.copy(),
+        "pc": pc
+    }
+    print(instr[0])
+    c.init([instr[0]])
+    inputs = c.sym_run(symconcolic, [instr[0]], 0,**kwargs)
+    m = z3.ArraySort(z3.IntSort(), z3.IntSort())
+
+    z3.solve(inputs)
     
 
 
 
 def main():
-    c.init([])
+    # c.init([])
     args = sys.argv[1:]
     if args == []:
         print("No input file given")
         return 1
-    prog = getProg(args[0])
     findline(args[0], int(args[1]))
-    print(c.store)
+    # print(c.store)
                 
 if __name__ == '__main__':
     main()

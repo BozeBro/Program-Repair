@@ -1,5 +1,6 @@
 from typing import *
 import sys
+import concolic
 
 def getProg(file):
     prog = {}
@@ -45,6 +46,7 @@ def getToken(instr):
         case ['update', _]:
             return 'update'
         case other:
+            print
             return 'fail'
     
 # getProg("fun_progs/selection_sort.w3a", prog)
@@ -61,6 +63,7 @@ def eval_insn(env, pc : int, instr : List[str]) -> int:
             return pc + 1
         case 'varAssign':
             v = env[instr[2]]
+            
             update(env, instr[0], v)
             return pc + 1
         case 'constArrayAssign':
@@ -97,7 +100,6 @@ def eval_insn(env, pc : int, instr : List[str]) -> int:
             v1 = env[v1]
             update(env, lhs, ops[op](v0, v1))
             return pc + 1
-
         case 'fail':
             raise Exception("Instruction not implemented")
 
@@ -123,6 +125,3 @@ def main():
     prog = getProg(args[0])
     eval_program(env, 1, prog)
 
-if __name__ == '__main__':
-    main()
-    

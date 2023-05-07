@@ -1,0 +1,4 @@
+a := array 10;
+res := 10;
+if (a !! 0) >= 10 then skip else skip;
+print res
