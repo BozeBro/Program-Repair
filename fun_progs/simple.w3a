@@ -1,4 +1,4 @@
-1: num := 0
+1: num := input 0
 2: a2 := 2
 3: a1 := num / a2
 4: m := a1
@@ -9,7 +9,7 @@
 9: goto 14
 10: res := 1
 11: goto 13
-12: res := 1
+12: res := 2
 13: goto 17
 14: a5 := t - num
 15: if a5 = 0 goto 10

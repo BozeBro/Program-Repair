@@ -79,6 +79,7 @@ let eval_insn env pc insn =
       let newVal = get_int (lookup env y) in
       update_arr env arrName ind newVal lookup;
       `Continue (pc + 1, env)
+  | _ -> failwith "not implemented"
 (* | UpdateIC (arrName, x, newVal) ->
        let ind = get_int (lookup env x) in
        update_arr env arrName ind newVal lookup;

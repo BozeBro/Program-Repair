@@ -1,8 +1,8 @@
-num := 11;
+num := input 0;
 m := num / 2;
 res := 0;
 t := m * 2;
 if t == num then
-    res := 1 else res := 1;
+    res := 1 else res := 2;
 print res
 

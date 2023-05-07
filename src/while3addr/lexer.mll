@@ -22,6 +22,8 @@ rule initial = parse
 | "array"       { ARRAY }
 | "halt"        { HALT }
 | "update"      { UPDATE }
+| "input"       { INPUT }
+| "len"         { LEN }
 
 | ['1'-'9']['0'-'9']* {
   let str = Lexing.lexeme lexbuf in

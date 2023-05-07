@@ -3,7 +3,7 @@ import z3
 from interpreter import *
 import concolic as c
 from copy import deepcopy
-def symconcolic(inputs, env, prog, pc: int):
+def symconcolic(inputs, env, prog, args, pc: int):
     env = deepcopy(env)
     prog = deepcopy(prog)
     # Assign concrete value
@@ -24,7 +24,7 @@ def symconcolic(inputs, env, prog, pc: int):
             if inputs:
                 prog[pc] = [var, ":=", str(inputs[var])]
             instr = fetch(prog, pc)
-            pc = eval_insn(env, pc, instr)
+            pc = eval_insn(env, args, pc, instr)
             c.set(var, z3.Int(var))
 
         # case 'if':
@@ -39,6 +39,10 @@ def symconcolic(inputs, env, prog, pc: int):
             return c.get(instr[1])
         old_pc = pc
         match getToken(instr):
+            case 'len':
+                c.set(instr[0], env[instr[-1]])
+            case 'input':
+                raise Exception("Should be passed getting inputs")
             case 'halt':
                 pass
             case 'constAssign':
@@ -101,19 +105,20 @@ def symconcolic(inputs, env, prog, pc: int):
                     c.set(lhs, z3.Select(sv0, sv1))
                 else:
                     c.set(lhs, ops[op](sv0, sv1))
-        pc = eval_insn(env, pc, instr)
+        pc = eval_insn(env, args, pc, instr)
                         
 def findline(f, line):
 
     prog = getProg(f)
     env = {}
     pc = 1
+    args = [100]
     while 0 <= pc <= max(prog) and pc != line:
         instr = fetch(prog, pc)
         if instr[0] == "print":
             pc += 1
             continue
-        pc = eval_insn(env, pc, instr)
+        pc = eval_insn(env, args, pc, instr)
     if pc != line:
         raise Exception("pc counter is out of bounds or ended too early")
     old_env = env.copy()
@@ -121,7 +126,8 @@ def findline(f, line):
     kwargs = {
         "env": old_env.copy(),
         "prog": prog.copy(),
-        "pc": pc
+        "pc": pc,
+        "args": args
     }
     print(instr[0])
     c.init([instr[0]])

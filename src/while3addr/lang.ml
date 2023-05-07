@@ -19,6 +19,8 @@ type instr =
      | UpdateCI of id * int * id
      | UpdateCC of id * int * int *)
   | Print of id
+  | Input of id * lineno
+  | Len of id * id
   | Halt
 
 type listing = instr Int.Map.t
@@ -49,6 +51,8 @@ let string_of_instr i = function
      | UpdateCI (v, a, b) -> Format.sprintf "%d: update %s %d %s" i v a b
      | UpdateIC (v, a, b) -> Format.sprintf "%d: update %s %s %d" i v a b *)
   | UpdateII (v, a, b) -> Format.sprintf "%d: update %s %s %s" i v a b
+  | Input (var,line) -> Format.sprintf "%d: %s := input %d" i var line
+  | Len (var, arr) -> Format.sprintf "%d: len %s %s" i var arr
 
 let string_of_listing listing =
   Int.Map.fold_right listing ~init:[] ~f:(fun ~key:lineno ~data:i accum ->

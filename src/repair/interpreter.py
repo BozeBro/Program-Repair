@@ -36,6 +36,10 @@ def getToken(instr):
                 if v.isnumeric():
                     return 'constArrayAssign'
                 return 'varArrayAssign'
+            elif instr[2] == 'input':
+                return 'input'
+            elif instr[2] == 'len':
+                return 'len'
             return 'opAssign'
         case ['goto', _]:
             return 'goto'
@@ -45,16 +49,27 @@ def getToken(instr):
             return 'print'
         case ['update', _]:
             return 'update'
+        case ['input', _]:
+            return 'input'
         case other:
             print
             return 'fail'
     
 # getProg("fun_progs/selection_sort.w3a", prog)
-def eval_insn(env, pc : int, instr : List[str]) -> int:
+def eval_insn(env, args, pc : int, instr : List[str]) -> int:
     global ops, cmps
     def update(env, id, value):
         env[id] = value
     match getToken(instr):
+        case 'input':
+            # input file line var
+            env[instr[0]] = args[int(instr[-1])]
+            print(env[instr[0]])
+            return pc + 1
+        case 'len':
+            arr = env[instr[-1]]
+            env[instr[0]] = len(arr)
+            return pc + 1
         case 'halt':
             return -1
         case 'constAssign':
@@ -107,21 +122,31 @@ def fetch(listing, location):
     if location not in listing:
         raise Exception(f"No instruction at {location}")
     return listing[location]
-def eval_program(env, pc, listing):
+def eval_program(env, args, pc, listing):
     while pc != -1:
         instr = fetch(listing, pc)
-        pc = eval_insn(env, pc, instr)
+        pc = eval_insn(env, args, pc, instr)
         # print(instr, pc)
         if pc > max(listing):
             raise Exception(f"Illegal line number {pc}")
 # eval_program(env, 1, prog)
 
-def main():
+def main(argv=None):
     env = {}
-    args = sys.argv[1:]
-    if args == []:
-        print("No input file given")
-        return 1
-    prog = getProg(args[0])
-    eval_program(env, 1, prog)
 
+    args = sys.argv[1:]
+    if argv == None:
+        for i in range(1, len(args)):
+            args[i] = eval(args[i])
+        if args == []:
+            print("No input file given")
+            return 1
+
+    prog = getProg(args[0])
+    if argv:
+        eval_program(env, argv, 1, prog)
+    else:
+        eval_program(env, args[1:], 1, prog)
+
+if __name__ == '__main__':
+    main()

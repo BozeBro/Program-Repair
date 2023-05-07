@@ -1,4 +1,4 @@
-1: res := 1000
+1: res := input 0
 2: num := res
 3: if num = 0 goto 6
 4: res := 0

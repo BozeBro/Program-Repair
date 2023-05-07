@@ -239,7 +239,9 @@ let compile stmt =
         let pc, prog = append_to_program prog (Goto else_start) in
         let prog = insert_in_program (pc, prog) jump_past_if (Goto pc) in
         insert_in_program prog jump_past_else_if_goto (Goto jump_past_if)
-    | While.While (b, s) ->
+    | While.Input (var, line) -> append_to_program prog (Input (var, line))
+    | While.Len (var, arr) -> append_to_program prog (Len (var, arr))
+    | While.While (b, s) -> 
         (* while b do s1 -->
            1. if not b goto 4
            2. s1
