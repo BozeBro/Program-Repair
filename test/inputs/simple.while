@@ -1,6 +1,0 @@
-len := 10;
-a := 0;
-while a < len do {
-    print a;
-    a := a + 1
-}

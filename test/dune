@@ -1,8 +1,0 @@
-; (executable
-;  (name test_analysis)
-;  (modules test_analysis)
-;  (libraries core ounit2 analysis))
-
-; (rule
-;  (alias runtest)
-;  (action (run ./test_analysis.exe)))
