@@ -1,0 +1,6 @@
+num := input 0;
+t := 10;
+res := 1;
+beta := res;
+if beta == (num * num) then beta := 1 else beta := 0;
+print beta

@@ -1,18 +1,14 @@
 /* Copied from https://stackoverflow.com/questions/1557894/non-recursive-merge-sort */
-num := 3;
-a := array num;
+a := input 0;
+num := len a;
 b := array num;
-update a 0 950;
-update a 1 206;
-update a 2 56;
-print a;
 right := 0;
 rend := 0;
 i := 3;
 j := 0;
 m := 0;
 t := 0;
-k := 1;
+k := 2;
 while k < num do {
     left := 0;
     while left + k < num do {

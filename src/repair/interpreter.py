@@ -1,14 +1,8 @@
 from typing import *
+from util import *
 import sys
 import concolic
 
-def getProg(file):
-    prog = {}
-    with open(file) as f:
-        for line in f.readlines():
-            lineno, instr = line.split(": ")
-            prog[int(lineno)] = instr.strip().split(" ")
-    return prog
 
 ops = {
     '+': lambda x, y: x + y,
@@ -64,7 +58,6 @@ def eval_insn(env, args, pc : int, instr : List[str]) -> int:
         case 'input':
             # input file line var
             env[instr[0]] = args[int(instr[-1])]
-            print(env[instr[0]])
             return pc + 1
         case 'len':
             arr = env[instr[-1]]
@@ -129,24 +122,35 @@ def eval_program(env, args, pc, listing):
         # print(instr, pc)
         if pc > max(listing):
             raise Exception(f"Illegal line number {pc}")
+def eval_program_dev(env, args, pc, listing):
+    while pc != -1:
+        instr = fetch(listing, pc)
+        if instr[0] == 'print':
+            return env[instr[1]]
+        pc = eval_insn(env, args, pc, instr)
+        # print(instr, pc)
+        if pc > max(listing):
+            raise Exception(f"Illegal line number {pc}")
 # eval_program(env, 1, prog)
 
 def main(argv=None):
     env = {}
-
     args = sys.argv[1:]
+    file = args[0]
     if argv == None:
-        for i in range(1, len(args)):
-            args[i] = eval(args[i])
+        if len(args) - 1 == 1:
+            args = [eval(args[1])]
+        else:
+            args = [[int(i) for i in args[1:]]]
         if args == []:
             print("No input file given")
             return 1
 
-    prog = getProg(args[0])
+    prog = getProg(file)
     if argv:
         eval_program(env, argv, 1, prog)
     else:
-        eval_program(env, args[1:], 1, prog)
+        eval_program(env, args, 1, prog)
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,6 @@
+num := input 0;
+a := num / 2;
+m := a * 2;
+b := m - num;
+if b == 0 then n := 1 else n := 1;
+print n

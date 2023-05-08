@@ -1,8 +1,15 @@
-1: res := input 0
-2: num := res
-3: if num = 0 goto 6
-4: res := 0
-5: goto 7
-6: res := 1
-7: print res 
-8: halt
+1: num := input 0
+2: t := 10
+3: res := 1
+4: beta := res
+5: goto 10
+6: beta := 1
+7: goto 9
+8: beta := 0
+9: goto 14
+10: a2 := num * num
+11: a1 := beta - a2
+12: if a1 = 0 goto 6
+13: goto 8
+14: print beta
+15: halt

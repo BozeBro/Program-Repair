@@ -89,7 +89,6 @@ def guard(g, line):
             # We just got to the last negated guard
             if path_record[k].line == line:
                 pass
-
                 # We got to an unexpected branch
                 raise ConcolicException(
                     (
@@ -125,94 +124,26 @@ def dump_smt():
     """print Z3 constraints in Python in SMT-LIB format"""
     if solver is not None:
         print(solver.to_smt2())
-# # Top-level runner
-# def run(func, vars, **kwargs):
-#     """Concolically executes `func` with parameters `vars` and returns (total_paths:int, bug_found:bool)"""
-#     global store, current_path, path_record, solver
-
-#     # Initialize state
-#     inputs = {str(v): 0 for v in vars}  # Could also be random
-#     init(vars)
-
-#     total_runs = 0
-#     bug_found = False
-
-#     while True:
-
-#         # Run concolically
-#         try:
-#             # print("Running with inputs %s" % inputs)
-#             total_runs += 1
-#             if kwargs:
-#                 func(**inputs, **kwargs)
-#             else:
-#                 func(**inputs)
-        
-#         except AssertionError as e:
-#             traceback.print_exc()
-#             print("*** Assertion violation found! Inputs are: %s" % inputs)
-#             bug_found = True
-#         finally:
-#             print("... Path collected: %s" % current_path)
-#             # print("Path Record: %s" % path_record)
-
-#         # Figure out the next guard to negate
-#         next = len(current_path) - 1
-#         while True:
-#             print(next, path_record)
-#             while next >= 0 and path_record[next].done:
-#                 next = next - 1
-
-#             if next == -1:
-#                 print("Concolic execution complete! %d paths explored." % total_runs)
-#                 # TODO: Actually do a random restart if there was any unsoundness observed
-#                 return total_runs, bug_found
-#             else:
-#                 # print("next idx=%d" % next)
-#                 # Create a new path constraint up to `next` with the condition at index `next` negated
-#                 current_path = current_path[:next] + [z3.Not(current_path[next])]
-#                 path_record = path_record[: next + 1]
-#                 solver.reset()
-#                 solver.insert(current_path)
-#                 # print("Path Record: %s" % path_record)
-#                 print(
-#                     "... Negating the condition at line %d...." % path_record[-1].line
-#                 )
-#                 print("...... New candidate path: %s" % current_path)
-#                 is_sat = solver.check()
-#                 if is_sat == z3.sat:
-#                     model = solver.model()
-#                     inputs = {
-#                         var_name: model.eval(
-#                             var_symbol, model_completion=True
-#                         ).as_long()
-#                         for var_name, var_symbol in symbols.items()
-#                     }
-#                     print("...... SAT! New inputs are: %s" % inputs)
-#                     reset()
-#                     print()
-#                     break
-#                 elif is_sat == z3.unsat:
-#                     print("...... UNSAT!")
-#                     next = next - 1
-#                     continue  # Go look for the next branch to negate
-#                 else:
-#                     raise Exception("You should not get a z3 result of %s." % is_sat)
-#             return
-
+def cmp(output, expected):
+    if not isinstance(output, z3.ArrayRef):
+        return output == expected
+    cond = True
+    for i, v in enumerate(expected):
+        cond = z3.And(z3.Select(output, i) == v,  cond)
+    return cond
 import random
 # Top-level runner
 def sym_run(func, vars, expected, **kwargs):
     """Concolically executes `func` with parameters `vars` and returns (total_paths:int, bug_found:bool)"""
     global store, current_path, path_record, solver
     # Initialize state
-    inputs = {str(v): random.randint(1, 100) for v in vars}  # Could also be random
+    inputs = {str(v): 0 for v in vars}  # Could also be random
     init(vars)
 
 
     total_runs = 0
     bug_found = False
-    constraints = False
+    constraints = None
     # f = z3.Function(z3.IntSort(), z3.IntSort(), z3.IntSort())
 
     while True:
@@ -231,18 +162,28 @@ def sym_run(func, vars, expected, **kwargs):
             # print("*** Assertion violation found! Inputs are: %s" % inputs)
             bug_found = True
         except ZeroDivisionError as e:
-            pass
+            output = ZeroDivisionError
         except IndexError:
-            pass
+            output = IndexError
         finally:
             # print("... Path collected: %s" % current_path)
+            pc = None
             if output != None:
-                pc = True
+                pc = None
                 for cond in current_path:
-                    pc = z3.And(pc, cond)
-                constraints = z3.Or(constraints, z3.And(pc, output == expected))
-            # print("Path Record: %s" % path_record)
-
+                    if pc == None:
+                        pc = cond
+                    else:
+                        pc = z3.And(pc, cond)
+            if pc == None and constraints == None:
+                constraints = cmp(output, expected)
+            elif pc == None and constraints != None:
+                constraints = z3.Or(constraints, cmp(output, expected))
+            elif pc != None and constraints == None:
+                constraints = z3.And(pc, cmp(output, expected))
+            else:
+                constraints = z3.Or(constraints, z3.And(pc, cmp(output, expected)))
+                
         # Figure out the next guard to negate
         next = len(current_path) - 1
         while True:
@@ -253,13 +194,18 @@ def sym_run(func, vars, expected, **kwargs):
             if next == -1:
                 # print("Concolic execution complete! %d paths explored." % total_runs)
                 # TODO: Actually do a random restart if there was any unsoundness observed
-                print(total_runs)
                 # return total_runs, bug_found
+                if constraints == None:
+                    return False
+                solver.reset()
+                reset()
                 return constraints
             else:
                 # print("next idx=%d" % next)
                 # Create a new path constraint up to `next` with the condition at index `next` negated
+
                 current_path = current_path[:next] + [z3.Not(current_path[next])]
+
                 path_record = path_record[: next + 1]
                 solver.reset()
                 solver.insert(current_path)
@@ -277,6 +223,7 @@ def sym_run(func, vars, expected, **kwargs):
                         ).as_long()
                         for var_name, var_symbol in symbols.items()
                     }
+
                     # print("...... SAT! New inputs are: %s" % inputs)
                     reset()
                     # print()

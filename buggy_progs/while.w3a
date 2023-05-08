@@ -1,0 +1,20 @@
+1: num := input 0
+2: count := 0
+3: goto 8
+4: a1 := 0
+5: goto 7
+6: a1 := 1
+7: goto 11
+8: if num < 0 goto 4
+9: if num = 0 goto 4
+10: goto 6
+11: if a1 = 0 goto 19
+12: a3 := 2
+13: a2 := count + a3
+14: count := a2
+15: a5 := 1
+16: a4 := num - a5
+17: num := a4
+18: goto 3
+19: print count
+20: halt
