@@ -1,7 +1,6 @@
 from typing import *
 from util import *
 import sys
-import concolic
 
 
 ops = {
@@ -15,6 +14,8 @@ cmps = {
     '<': lambda x, y: x < y,
     '=': lambda x, y: x == y
 }
+# Type of token the instr is.
+# Fail if the instruction is unfamiliar or unimplemented.
 def getToken(instr):
     if instr[0] == 'halt':
         return 'halt'
@@ -131,7 +132,6 @@ def eval_program_dev(env, args, pc, listing):
         # print(instr, pc)
         if pc > max(listing):
             raise Exception(f"Illegal line number {pc}")
-# eval_program(env, 1, prog)
 
 def main(argv=None):
     env = {}

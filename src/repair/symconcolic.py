@@ -7,6 +7,10 @@ from util import *
 import concolic as c
 from copy import deepcopy
 from function import forma, formb, formc 
+# applies transformation to program to prevent clashing in w3A when solving constraints
+# if num is a variable that receives input from args and it is 3 in one execution and 4 in another execution
+# z3 will naturally assert both of them and num can't be 3 and 4 at the same time in the constraints 
+# Thus unsolvable.
 def transformProg(pro, i):
     ind = '_' + i
     prog = deepcopy(pro)
@@ -47,6 +51,8 @@ def transformProg(pro, i):
                 raise Exception("Not Implemented")
     return prog
 
+# This is the same as regular execution but we now have instrumentation
+# essentially instrumentation engine and interpreter.
 def symconcolic(inputs, env, prog, args, ind, pc: int, maxcount=50):
     count = defaultdict(int)
     env = deepcopy(env)
@@ -150,22 +156,13 @@ def symconcolic(inputs, env, prog, args, ind, pc: int, maxcount=50):
         pc = eval_insn(env, args, pc, instr)
 
 
-def formula(env, expr, output):
-    ops = [mul, div, minus, add]
-    vars = {
-        k: z3.Int(k) for k in env
-    }
-    initC = True
-    # for k, v in env.items():
-    #     initC = z3.And(initC, vars[k] == v)
-    constraint = False
-    for v in vars.values():
-        constraint = z3.Or(constraint, expr == v)
-    # constraint = z3.Or(constraint, expr == z3.IntSort())
-    for op, (left, right) in product(ops, permutations(list(vars.values()) + list(vars.values()), 2)):
-        option = expr == op(left, right)
-        constraint = z3.Or(constraint, option)
-    return z3.And(initC, constraint) 
+# expected is expected output
+# line is line number whose expression value we want to replace
+# args is the environment that we are running in 
+# ind is the index of the TestSuite
+# we tempararily apply _ind to each of the variable names 
+# to prevent z3 from clashing assertion about env's from different 
+# test inputs
 def findline(ind, prog, args, line,expected):
     env = {}
     pc = 1
@@ -209,7 +206,12 @@ def findline(ind, prog, args, line,expected):
         
     funcs = [forma, formb, formc]
     return [z3.And(constraints, f(new_env, rep)) for f in funcs]
-
+# Generates constraints for each test input into the file
+# Return of length four is strange but
+# Need to ensure when synthesizing that we are only using one type of expression
+# either a + b, a, constant.
+# We cannot allow a solution that uses a + b and the other uses a, 
+# That is still an illegal solution to the solver.
 def findlines(prog, line, io_pairs):
     constraint = []
     for i, (args, expected) in enumerate(io_pairs):

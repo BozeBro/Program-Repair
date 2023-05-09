@@ -2,6 +2,7 @@ import sys
 from util import getProg
 from interpreter import *
 from collections import defaultdict
+# ranks files just like the SemFix paper. Sorted list is the return type
 def rankLines(lines, sc, fl, sc_count, fl_count):
     rank = {}
     
@@ -39,6 +40,8 @@ def getCoverage(prog, freq, args):
 
 
     return freq, res
+# High level wrapper for the rankLines function. We get each program with the test input 
+# and grab the rankings from each and coalesce them together
 def testCoverage(file, argsv):
     fail = defaultdict(int)
     succ = defaultdict(int)

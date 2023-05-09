@@ -1,6 +1,8 @@
 from z3 import * 
 from itertools import *
 from util import *
+# Makes a constraint that v := a + b
+# where a and b are variables 
 def forma(env, output):
     ops = [mul, div, minus, add]
     vars = {
@@ -40,12 +42,14 @@ def forma(env, output):
     # for k, v in env.items():
     #     constraint = And(constraint, vars[k] == v)
     return constraint
+# Makes a constraint that v := a
 def formb(env, output):
     D = Int('__d')
     if type(output) == list:
         D = Array('__dArr', IntSort(), IntSort())
         return cmp(D, output)
     return output == D
+# makes constraint taht v := c where c is a constant. 
 def formc(env, output):
     C = String('__c')
     vars = {

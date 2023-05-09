@@ -2,7 +2,7 @@ from interpreter import *
 from fault_localization import *
 from symconcolic import *
 from z3 import *
-import concolic
+# Different than ops since we need string representation
 opers = {
     'mul': '*',
     'div': '/',
@@ -10,10 +10,13 @@ opers = {
     'minus': '-',
     'get' : '!!',
 }
-
+# code smell but turns string representation into desired 
+# representation
+# do not use for evil please
 def get_args(line):
     args = line.split(" ")
     return [eval(arg) for arg in args]
+# We use second argument is only 1 thing, not multiple.
 def get_ioPair(line):
     split = line.split(" : ")
     return tuple([get_args(split[0]), eval(split[1])])
@@ -24,6 +27,9 @@ def write_prog(prog, file='output.w3a'):
         for i in sorted(prog.keys()):
             output += f"{i}: " + " ".join(prog[i]) + '\n'
         f.write(output)
+# __a, __b, etc. refer to symbolic names found in function.py
+# Iirc, the Ocaml compiler and interpreters do not allow for names starting with underscore
+# so this type of global forcing should be fine. 
 def newProg(index, pc, prog, rep):
     instr = fetch(prog, pc)
     var = instr[0]
@@ -35,7 +41,8 @@ def newProg(index, pc, prog, rep):
         prog[pc] = [var, ':=', str(rep['__c'])]
     return prog
 
-
+# Main repair function
+# God function essentially
 def repair(testFile, outfile):
     io_pairs = None
     lines = None
@@ -49,27 +56,26 @@ def repair(testFile, outfile):
     rank = testCoverage(lines[0], io_pairs)
     prog = getProg(lines[0])
     for pc in rank:
-        try:
-            C = findlines(deepcopy(prog), pc, io_pairs)
-            s = Solver()
-            
-            for i, sol in enumerate(C):
-                s.reset()
-                s.add(sol)
-                is_sat = s.check()
-                if is_sat == sat:
-                    model = s.model()
-                    rep = {str(i): eval(repr(model[i])) for i in model}
-                    progN = newProg(i, pc, deepcopy(prog), rep)
-                    for (input, output) in io_pairs:
-                        out = eval_program_dev({}, input, 1, deepcopy(progN))
-                        if out != output:
-                            continue
-                    write_prog(progN, outfile)
-                    print(f"New file created at {outfile}")
-                    return
-        except ZeroDivisionError:
-            pass
+        # Constraint type 
+        C = findlines(deepcopy(prog), pc, io_pairs)
+        s = Solver()
+        
+        for i, sol in enumerate(C):
+            s.reset()
+            s.add(sol)
+            is_sat = s.check()
+            if is_sat == sat:
+                model = s.model()
+                rep = {str(i): eval(repr(model[i])) for i in model}
+                progN = newProg(i, pc, deepcopy(prog), rep)
+                # Verify program works
+                for (input, output) in io_pairs:
+                    out = eval_program_dev({}, input, 1, deepcopy(progN))
+                    if out != output:
+                        continue
+                write_prog(progN, outfile)
+                print(f"New file created at {outfile}")
+                return
     print("No successful New Program found")
 
 def main():

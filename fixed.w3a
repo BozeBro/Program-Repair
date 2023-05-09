@@ -1,0 +1,18 @@
+1: num := input 0
+2: a2 := 2
+3: a1 := num / a2
+4: a := a1
+5: a4 := 2
+6: a3 := a * a4
+7: m := a3
+8: a5 := m - num
+9: b := a5
+10: goto 15
+11: n := 1
+12: goto 14
+13: n := m - m
+14: goto 17
+15: if b = 0 goto 11
+16: goto 13
+17: print n
+18: halt

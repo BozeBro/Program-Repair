@@ -19,17 +19,33 @@ opam install core dune merlin ounit2
     - `while`: a While interpreter
     - `w3a`: a While3addr interpreter
     - `compile`: a While to While3addr compiler
-    - `analyze`: analyzes a While3addr file (using your analysis) and outputs
-      the results
+
   All of these binaries take input on stdin and output on stdout (i.e., you can
   run a While program by running `./while < program.while`, *not* by passing a
   file as input).
-  
- - Test with `make test`. This will run any test cases placed in `test/test_analysis.ml`. There are a few test cases      already provided in the `test_analysis.ml` file to help you get started with testing your code, and we highly suggest that
-   you add more!
+# Python 
+Python requires a version of at least 3.10 to use (the project makes use of the new match statement).  It also needs z3 to solve constraints.
+Install z3 via 
+```
+pip3 install z3-solver
+```
+The important python3 file entrypoints are `src/repair/repair.py` and `src/repair/interpreter.py`
+repair.py takes two arguements, testPath and outPath,
+testPath informs us of the Test Suite and outPath outputs a new program that passes all the test cases. 
+Interpreter.py runs a w3a program along with  some given inputs.
+`python3 src/repair/interpreter file args`. The file is a path to the file containing a valid a w3a program.
+args is either an int for an integer argument, or a space separated list of integers to denote a list arguement. This implies that a w3a program only has a single input. 
 
-# Handin
-Handin *only* `src/analysis/df.ml` to Gradescope to run your code against a set of held out test cases.
+File specification for writing a Test suite will loook like
+
+buggyProgPath
+input1 : output1
+input2 : output2
+inputn : outputn
+
+Run `python src/repair/repair.py filePath outPath` 
+will try to fix file at buggyProgPath and generate a program to try to pass the three tests given in the file. The generated program is located at outPath. 
+
 
 # Resources
 
