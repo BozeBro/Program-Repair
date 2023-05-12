@@ -23,7 +23,7 @@ def getToken(instr):
         case [x, ":="]:
             if len(instr) == 3:
                 v = instr[2]
-                if v.isnumeric():
+                if v.lstrip('-+').isnumeric():
                     return 'constAssign'
                 return 'varAssign'
             elif instr[2] == 'array':
