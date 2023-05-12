@@ -46,7 +46,7 @@ inputn : outputn
 Run `python src/repair/repair.py filePath outPath` 
 will try to fix file at buggyProgPath and generate a program to try to pass the three tests given in the file. The generated program is located at outPath. 
 
-
+[Program Report](./Program%20Report.pdf) Gives moere detail on the research in automatic program repair, the specification of the project, tradeoffs, and how to reproduce the setup.
 # Resources
 
 - You might be interested in reading Adam Chlipala's overview of the philosophic

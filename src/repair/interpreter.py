@@ -47,7 +47,6 @@ def getToken(instr):
         case ['input', _]:
             return 'input'
         case other:
-            print
             return 'fail'
     
 # getProg("fun_progs/selection_sort.w3a", prog)
