@@ -174,7 +174,7 @@ def findline(ind, prog, args, line,expected):
             continue
         pc = eval_insn(env, args, pc, instr)
     if pc != line:
-        return [True, True, True, True]
+        return [True, True, True]
         # raise Exception("pc counter is out of bounds or ended too early")
     old_env = env.copy()
     instr = fetch(prog, pc)
